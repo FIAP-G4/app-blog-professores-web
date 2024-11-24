@@ -8,6 +8,16 @@ import { NavigationProvider, NavigationConsumer } from '@/context/NavigationCont
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// ADICIONE ROTAS E COMPONENTES DE PÁGINA AQUI
+const routeComponents = {
+  '/': PostList,
+  '/login': Login,
+  '/create-account': CreateAccount,
+  //'/create': CreatePost,
+  //'/profile': Profile,
+  //'/settings': Settings,
+};
+
 const App = () => {
   return (
     <>
@@ -30,17 +40,18 @@ const App = () => {
               <NavigationConsumer>
                 {({ availableNavigation, authenticatedNavigation }) => (
                   <AuthConsumer>
-                    {({ isAuthenticated }) => {                      
-                      const navigation = isAuthenticated ? authenticatedNavigation : availableNavigation;
+                    {({ isAuthenticated }) => {
+                      const navigation = isAuthenticated ? 
+                    [...availableNavigation, ...authenticatedNavigation] : 
+                    availableNavigation;
                       return (
                         <Routes>
-                          <Route path="/" element={<PostList />} />
-                          <Route path="/login" element={<Login />} />
-                          <Route path="/create-account" element={<CreateAccount />} />
-                          {/* Aqui você pode mapear a navegação, por exemplo */}
-                          {navigation.map((navItem) => (
-                            <Route key={navItem.href} path={navItem.href} element={<PostList />} />
-                          ))}
+                          {navigation.map((navItem) => {
+                            const Component = routeComponents[navItem.href];
+                            return (
+                              <Route key={navItem.href} path={navItem.href} element={Component ? <Component /> : null} />
+                            );
+                          })}
                         </Routes>
                       );
                     }}

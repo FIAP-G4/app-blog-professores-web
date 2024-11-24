@@ -1,19 +1,15 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Criar o contexto
 const AuthContext = createContext();
 
-// Hook para consumir o contexto
 export const useAuth = () => useContext(AuthContext);
 
-// Componentes filhos (para uso do AuthContext)
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Função para login
   const login = (token, userData) => {
     localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -21,7 +17,6 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-  // Função para logout
   const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
@@ -30,7 +25,6 @@ export const AuthProvider = ({ children }) => {
     navigate('/');
   };
 
-  // Verificar autenticação ao iniciar a aplicação
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
