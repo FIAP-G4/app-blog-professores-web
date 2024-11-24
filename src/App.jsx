@@ -3,8 +3,8 @@ import PostList from '@/pages/PostList';
 import Login from '@/pages/Login';
 import CreateAccount from '@/pages/CreateAccount';
 import Navbar from '@/components/Navbar';
-import { AuthProvider } from '@/context/AuthContext';
-import { NavigationProvider } from '@/context/NavigationContext';
+import { AuthProvider, AuthConsumer } from '@/context/AuthContext';
+import { NavigationProvider, NavigationConsumer } from '@/context/NavigationContext';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -26,12 +26,27 @@ const App = () => {
       <Router>
         <NavigationProvider>
           <AuthProvider>
-            <Navbar>
-              <Routes>
-                <Route path="/" element={<PostList />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/create-account" element={<CreateAccount />} />
-              </Routes>
+            <Navbar>              
+              <NavigationConsumer>
+                {({ availableNavigation, authenticatedNavigation }) => (
+                  <AuthConsumer>
+                    {({ isAuthenticated }) => {                      
+                      const navigation = isAuthenticated ? authenticatedNavigation : availableNavigation;
+                      return (
+                        <Routes>
+                          <Route path="/" element={<PostList />} />
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/create-account" element={<CreateAccount />} />
+                          {/* Aqui você pode mapear a navegação, por exemplo */}
+                          {navigation.map((navItem) => (
+                            <Route key={navItem.href} path={navItem.href} element={<PostList />} />
+                          ))}
+                        </Routes>
+                      );
+                    }}
+                  </AuthConsumer>
+                )}
+              </NavigationConsumer>
             </Navbar>
           </AuthProvider>
         </NavigationProvider>
