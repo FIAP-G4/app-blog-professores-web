@@ -8,6 +8,7 @@ import Header from './Header';
 import MainContent from './MainContent';
 import ProfileMenu from './ProfileMenu';
 import { getNavigation } from '@/utils/getNavigation';
+import { Footer } from './Footer';
 
 const Navbar = ({ children }) => {
   const location = useLocation();
@@ -52,6 +53,7 @@ const Navbar = ({ children }) => {
       </Disclosure>
       <Header>{currentNavigationItem ? currentNavigationItem.name : ''}</Header>
       <MainContent>{children}</MainContent>
+      <Footer />
     </div>
   );
 };
